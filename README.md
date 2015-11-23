@@ -1,23 +1,31 @@
 # Geoy
 
-The point of Geoy is for geo-location resolution and querying.
+Geoy is a geo-location resolution and querying HTTP service written in Go.
 
 ## Resolution
 
 We should be able to resolve the geo-location from these data points:
 
 1. IP Address
-2. Geo-coordinate
-3. String (of a city, neighbourhood)
-4. Polygon
+2. Geo-point <lat,lng>
+3. String (city, state, country)
+4. Geo-polygon
 
-The idea is that we can transform between any of those four. ie. Having an IP address we can return the city string and polygon. Having a geo-coordinate we can return the city name and neighbourhood (I guess we don't need to return the IP blocks).
+The idea is that we can transform between any of those four data types. ie. From an IP address
+we can return the city string and geo-polygon of the city. With a geo-coordinate point we can
+return the city string name and polygon of the city boundaries.
 
-## Querying
 
-Ability to store a geo-coordinate data point and then query it by finding it within a city, neighbourhood, from a specific point + radius, or a polygon.
+## Querying (on roadmap?)
 
-## API Examples
+**NOTE: Querying is currently on hold, perhaps Geoy will offer this in future versions, but first
+its used to normalize and transform between the different kinds of geo-location types.**
+
+Ability to store a geo-coordinate data point and then query it by finding it within a city,
+neighbourhood, from a specific point + radius, or a polygon.
+
+
+## API
 
 ### Resolve
 
@@ -29,22 +37,25 @@ GET http://geoy.io/resolve?ip=4.2.2.2
 Response:
 * json structure of the country, province and city.. as close as we can make it
 something like:
-{ 
+{
   "city":"Toronto",
   "state":"Ontario",
   "country":"Canada",
-  "polygon":[1.0,1.1,1.1,1.2,1.2,1.0]
+  "region":[1.0,1.1,1.1,1.2,1.2,1.0]
 }
 ```
 
 Look up by geo-cordinate
 ```
 Request:
-GET http://geoy.io/resolve?coord=1.0,1.2
+GET http://geoy.io/resolve?point=1.0,1.2
 
 Response:
 {
-  "city":"Toronto", etc.
+  "city":"Toronto",
+  "state":"Ontario",
+  "country":"Canada",
+  "region":[1.0,1.1,1.1,1.2,1.2,1.0]
 }
 ```
 
@@ -55,13 +66,15 @@ GET http://geoy.io/resolve?name=Toronto
 
 Response:
 {
-  "city": "Toronto",
-  "polygon": [...],
-  "center": [1.1,1.2]
+  "city":"Toronto",
+  "state":"Ontario",
+  "country":"Canada",
+  "region":[1.0,1.1,1.1,1.2,1.2,1.0]
+  "center":[1.1,1.2]
 }
 ```
 
-### Data
+### Data (on roadmap?)
 
 Adding a location
 ```
@@ -83,8 +96,9 @@ Response:
 ]
 ```
 
+
 ## NOTES
 
 1. Should we have a location id...? tracking a physical place, or a city, etc... (Instagam does this)
 2. Should we limit the polygon points to 4 data points, like a bounding box (Twitter does this)
-  * whatever makes querying easier.. 4 points will be accurate enough
+  * whatever makes querying easier.. 4 points will be accurate enough.. 5, 6 points?
