@@ -104,3 +104,5 @@ Response:
 2. Should we limit the polygon points to 4 data points, like a bounding box (Twitter does this)
   * whatever makes querying easier.. 4 points will be accurate enough.. 5, 6 points?
   * advantage is we can keep it a simple bounding box for points North-East-South-West
+3. Look at Maxmind for IP database
+4. Look at GeoNames premium (commercial) db for city database
